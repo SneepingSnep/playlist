@@ -19,7 +19,9 @@
 #define PLAYLIST_OUT_PATH "playlist-out.txt"
 // To avoid unnecessary complexity, we fix the filenames instead of getting them
 // through runtime parameters.
-char *txtFileIdentifier = ".txt";
+char *txtFileIdentifier = "in.txt";
+char inputTxtfiles[3][MAX_FILEPATH_SIZE];
+size_t inputTxtFilesentries = 0;
 typedef char Data[TRACK_TITLE_SIZE];
 Node *playlist;
 
@@ -87,7 +89,7 @@ void save_file(const char *filename, Node *list) {
   Node *adress = playlist;
   while (adress) {
     printf("%s\n", (char *)adress->data);
-    fprintf(f, "%d: %s\n", playlistNu, *(Data *)adress->data);
+    fprintf(f, "%s\n", *(Data *)adress->data);
     adress = adress->next;
     playlistNu++;
   }
@@ -100,37 +102,13 @@ void print_tracks(const Node *const playlist) {
     printf("%2zu: %s\n", i, (char *)current->data);
 }
 
-void printdir(char *dir, int depth) {
-  DIR *dp;
-  struct dirent *entry;
-  struct stat statbuf;
-  if ((dp = opendir(dir)) == NULL) {
-    fprintf(stderr, "cannot open directory: %s\n", dir);
-    return;
-  }
-  // changes directory to actual.
-  chdir(dir);
-  while ((entry = readdir(dp)) != NULL) {
-    stat(entry->d_name, &statbuf);
-    if (S_ISDIR(statbuf.st_mode)) {
-      /* Found a directory, but ignore . and .. */
-      if (strcmp(".", entry->d_name) == 0 || strcmp("..", entry->d_name) == 0)
-        continue;
-      printf("%*s%s/\n", depth, "", entry->d_name);
-      /* Recurse at a new indent level */
-      printdir(entry->d_name, depth + 4);
-    } else
-      printf("%*s%s\n", depth, "", entry->d_name);
-  }
-  chdir("..");
-  closedir(dp);
-}
-
 void findtextfiles(char *dir) {
-  int txtlen = strlen(".txt");
+  // function to find files ending with in.txt
+  int txtlen = strlen("in.txt");
   DIR *dp;
   struct dirent *entry;
   struct stat statbuf;
+  // opening directory kinda like a file but with another function
   if ((dp = opendir(dir)) == NULL) {
     fprintf(stderr, "cannot open directory: %s\n", dir);
     return;
@@ -138,45 +116,47 @@ void findtextfiles(char *dir) {
   // changes directory to actual.
   chdir(dir);
   while ((entry = readdir(dp)) != NULL) {
+    // in here i retrieve the name into a buffer and filter the buffername
+    // untill i get the values i want
     stat(entry->d_name, &statbuf);
+    // filterPointer = strtok(entry->d_name, "-");
+    // filterPointer = strtok(NULL, "-");
     int filtervalue = strlen(entry->d_name) - txtlen;
     if ((strcmp(entry->d_name + filtervalue, txtFileIdentifier)) == 0) {
       printf("%s\n", entry->d_name);
+      memcpy(inputTxtfiles[inputTxtFilesentries], entry->d_name,
+             MAX_FILEPATH_SIZE);
+      inputTxtFilesentries++;
     }
   }
+  closedir(dp);
 }
 
 int main() {
 
   findtextfiles(
       "C:\\Users\\sebas\\OneDrive\\DTU\\cprog\\Code samples\\playlist");
-#if 0
+#if 1
   const int screenWidth = 2000;
   const int screenHeight = 1500;
 
   InitWindow(screenWidth, screenHeight,
              "raylib [core] example - directory files");
 
-  char directory[MAX_FILEPATH_SIZE] = {0};
-  strcpy(directory, GetWorkingDirectory());
-
-  FilePathList files = LoadDirectoryFiles(directory);
-
   int btnBackPressed = false;
 
   SetTargetFPS(60);
   //--------------------------------------------------------------------------------------
-
   // Main game loop
   while (!WindowShouldClose()) // Detect window close button or ESC key
   {
     // Update
     //----------------------------------------------------------------------------------
-    if (btnBackPressed) {
-      TextCopy(directory, GetPrevDirectoryPath(directory));
-      UnloadDirectoryFiles(files);
-      files = LoadDirectoryFiles(directory);
-    }
+    // if (btnBackPressed) {
+    //   TextCopy(directory, GetPrevDirectoryPath(directory));
+    //   UnloadDirectoryFiles(files);
+    //   files = LoadDirectoryFiles(directory);
+    // }
     //----------------------------------------------------------------------------------
 
     // Draw
@@ -184,26 +164,20 @@ int main() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawText(directory, 100, 40, 20, DARKGRAY);
+    DrawText("directory", 100, 40, 20, DARKGRAY);
 
     btnBackPressed = GuiButton((Rectangle){40.0f, 38.0f, 48, 24}, "<");
 
-    for (int i = 0; i < (int)files.count; i++) {
-      Color color = Fade(LIGHTGRAY, 0.3f);
+    // for (int i = 0; i < (int)files.count; i++) {
+    Color color = Fade(LIGHTGRAY, 0.3f);
 
-      if (!IsPathFile(files.paths[i]) && DirectoryExists(files.paths[i])) {
-        if (GuiButton(
-                (Rectangle){0.0f, 85.0f + 40.0f * (float)i, screenWidth, 40},
-                "")) {
-          TextCopy(directory, files.paths[i]);
-          UnloadDirectoryFiles(files);
-          files = LoadDirectoryFiles(directory);
-          continue;
-        }
-      }
+    for (int i = 0; i < 3; i++) {
+      GuiButton((Rectangle){0.0f, 85.0f + 40.0f * (float)i,
+                            screenWidth / (float)2, 40},
+                "");
 
-      DrawRectangle(0, 85 + 40 * i, screenWidth, 40, color);
-      DrawText(GetFileName(files.paths[i]), 120, 100 + 40 * i, 10, GRAY);
+      DrawRectangle(0, 85 + 40 * i, screenWidth / (float)2, 40, color);
+      DrawText(inputTxtfiles[i], 120, 100 + 40 * i, 10, GRAY);
     }
 
     EndDrawing();
@@ -212,7 +186,7 @@ int main() {
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
-  UnloadDirectoryFiles(files);
+  // UnloadDirectoryFiles(files);
 
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------

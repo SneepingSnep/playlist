@@ -1,8 +1,7 @@
 #Global uses of variables
 SRC = src/main.c
-ALTSRC = src/mainwthrectangles.c
+
 OBJ = $(SRC:.c=.o)
-OBJALT = $(ALTSRC:.c=.o)
 #/////////////////////////////////////////////////////////////////////////////////
 #Here goes the Linux commad section
 LINUXCC = gcc
@@ -32,35 +31,30 @@ $(LINUXCLEAN):
 
 
 WINDOWSCC = clang
-SIMPLEFLAGS = -Wall -I../raylib/include
-RAYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
-WCFLAGS = -Wall -Wextra -std=gnu2y -g -Iheaders $(RAYLIBFLAGS)
+#SIMPLEFLAGS = -Wall -I../raylib/include
+#AYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
+WCFLAGS = -Wall -Wextra -std=gnu2y -g -Iheaders 
 WINDOWSDELCMD = del
 # Source and object files
 WINDOWSDEL =  .\src\main.o
 WINDOWSOBJ1 = ./mainw.exe
-WINDOSOBJALT = ./mainwalt.exe
+
 # Target executable
 WINDOWSTARGET = mainw
-WINDOWSTARGETalt = mainwalt
+
 WINDOWSTARGET1 = gow
-WINDOWSTARGET1alt = gowalt
+
 WINDOWSCLEAN = cleanw
 #
 #build
 
-$(WINDOWSTARGETalt): $(OBJALT)
-	$(WINDOWSCC) $(RAYLIBFLAGS) -o $@ $(OBJALT)
-%.o: %.c
-	$(WINDOWSCC) -c $(RAYLIBFLAGS) $< -o $@
+
 
 $(WINDOWSTARGET): $(OBJ)
-	$(WINDOWSCC) $(RAYLIBFLAGS) -o $@ $(OBJ)
+	$(WINDOWSCC) $(WCFLAGS) -o $@ $(OBJ)
 %.o: %.c
 	$(WINDOWSCC) -c $(RAYLIBFLAGS) $< -o $@
 
-$(WINDOWSTARGET1alt): $(WINDOSOBJALT)
-	$(WINDOSOBJALT)
 $(WINDOWSTARGET1): $(WINDOWSOBJ1)
 	$(WINDOWSOBJ1)
 

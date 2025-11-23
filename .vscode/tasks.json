@@ -6,7 +6,8 @@
             "command": "clang",
             "args": [
                 "'@compile_flags.txt'",
-                "./src/linkedlist.c",
+                "./src/main.c",
+                "./src/singly_linked_list.c",
                 "-o",
                 "main"
             ],

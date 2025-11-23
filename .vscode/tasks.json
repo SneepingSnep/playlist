@@ -6,6 +6,11 @@
             "command": "clang",
             "args": [
                 "'@compile_flags.txt'",
+                "-lmsvcrt",
+                "-lraylib",
+                "-lgdi32",
+                "-lwinmm",
+                "-L../raylib/lib",
                 "./src/main.c",
                 "./src/singly_linked_list.c",
                 "-o",

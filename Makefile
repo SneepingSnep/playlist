@@ -32,7 +32,7 @@ $(LINUXCLEAN):
 
 WINDOWSCC = clang
 #SIMPLEFLAGS = -Wall -I../raylib/include
-#AYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
+RAYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
 WCFLAGS = -Wall -Wextra -std=gnu2y -g -Iheaders 
 WINDOWSDELCMD = del
 # Source and object files
@@ -51,7 +51,7 @@ WINDOWSCLEAN = cleanw
 
 
 $(WINDOWSTARGET): $(OBJ)
-	$(WINDOWSCC) $(WCFLAGS) -o $@ $(OBJ)
+	$(WINDOWSCC) $(RAYLIBFLAGS) -o $@ $(OBJ)
 %.o: %.c
 	$(WINDOWSCC) -c $(RAYLIBFLAGS) $< -o $@
 

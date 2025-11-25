@@ -26,7 +26,7 @@ char *remove_newline_if_exists(char *line) {
   // YOUR CODE HERE
   char newlineFinder = '\n';
   int lineLength = strlen(line);
-  for (size_t lineIndex = 0; lineIndex < lineLength; lineIndex++) {
+  for (int lineIndex = 0; lineIndex < lineLength; lineIndex++) {
     if (newlineFinder == line[lineIndex])
       line[lineIndex] = ' ';
   }
@@ -44,7 +44,7 @@ Node **load_file(const char *filename, Node **list) {
     exit(EXIT_FAILURE);
   }
   char line[TRACK_TITLE_SIZE];
-  size_t listcntr = 0;
+
   while (fgets(line, TRACK_TITLE_SIZE, f)) {
     remove_newline_if_exists(line);
 
@@ -78,13 +78,12 @@ void save_file(const char *filename, Node *list) {
   // We need this cast, because `data` is a pointer to everything (`void *`).
   auto current = playlist;
   // YOUR CODE HERE
-  int playlistNu = 1;
+
   Node *adress = playlist;
   while (adress) {
     printf("%s\n", (char *)adress->data);
     fprintf(f, "%s\n", *(Data *)adress->data);
     adress = adress->next;
-    playlistNu++;
   }
   fclose(f);
 }

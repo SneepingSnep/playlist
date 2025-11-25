@@ -52,8 +52,8 @@ WINDOWSCLEAN = cleanw
 
 $(WINDOWSTARGET): $(OBJ)
 	$(WINDOWSCC) $(WCFLAGS) -o $@ $(OBJ)
-#%.o: %.c
-#	$(WINDOWSCC) -c $(WCFLAGS) $< -o $@
+%.o: %.c
+	$(WINDOWSCC) -c $(WCFLAGS) $< -o $@
 
 $(WINDOWSTARGET1): $(WINDOWSOBJ1)
 	$(WINDOWSOBJ1)

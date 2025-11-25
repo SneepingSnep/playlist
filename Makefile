@@ -1,5 +1,5 @@
 #Global uses of variables
-SRC = src/main.c
+SRC = src/main.c src/singly_linked_list.c
 
 OBJ = $(SRC:.c=.o)
 #/////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ $(LINUXCLEAN):
 
 WINDOWSCC = clang
 #SIMPLEFLAGS = -Wall -I../raylib/include
-RAYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
+#RAYLIBFLAGS = -Wall -I../raylib/include -L../raylib/lib -lraylib -lmsvcrt  -lgdi32 -lwinmm 
 WCFLAGS = -Wall -Wextra -std=gnu2y -g -Iheaders 
 WINDOWSDELCMD = del
 # Source and object files
@@ -51,9 +51,9 @@ WINDOWSCLEAN = cleanw
 
 
 $(WINDOWSTARGET): $(OBJ)
-	$(WINDOWSCC) $(RAYLIBFLAGS) -o $@ $(OBJ)
-%.o: %.c
-	$(WINDOWSCC) -c $(RAYLIBFLAGS) $< -o $@
+	$(WINDOWSCC) $(WCFLAGS) -o $@ $(OBJ)
+#%.o: %.c
+#	$(WINDOWSCC) -c $(WCFLAGS) $< -o $@
 
 $(WINDOWSTARGET1): $(WINDOWSOBJ1)
 	$(WINDOWSOBJ1)
